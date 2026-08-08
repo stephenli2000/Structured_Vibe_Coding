@@ -116,20 +116,22 @@ This will generate a file my_app_concat.txt
 
 3. Drop the my_app_concat.txt in AI chat window along with the following prompt,
 
-> Audit the feature requests in `change_request_prompt.md`. Stop and ask for clarification if you find any logical gaps, unhandled edge cases, contradictions, or missing data dependencies.
-> ### Rules of Engagement
-> **The Ground Truth Principle:** Treat the codebase as the absolute source of truth. Markdown design files represent historic intent; if they clash with the codebase, the code wins.
+> Please review `change_request_prompt.md`. 
 > 
-> **No Code Yet:** Wait for my approval on your audit of `change_request_prompt.md` and answers to any clarifications before writing any code or architectural designs. When you ask questions for clarifications, please use entirely user-verifiable language—try to avoid referring to underlying codebase structures or architectural terminology.
+> Audit the feature requests. Stop and ask for clarification if you find any logical gaps, unhandled edge cases, contradictions, or missing data dependencies.
+> ### Rules of Engagement
+> **The Ground Truth Principle:** Treat the codebase as the absolute source of truth. Markdown design files represent historical intent; if they clash with the codebase, the code wins.
+> 
+> **No Code Yet:** Wait for my approval on your audit and answers to any clarifying questions before writing any code or architectural designs. When asking for clarification, please use entirely user-verifiable language—try to avoid referring to underlying codebase structures or architectural terminology.
 > 
 > ### Update Instructions (Apply only if there are no pending clarifications)
-> If there are no pending clarifications, update `change_request_prompt.md` incorporating the following instructions:
+> If there are no pending clarifications, update the provided feature requests, incorporating the following instructions:
 > 
 > - **Incremental Scoping:** Break the feature down into smaller, user-verifiable sub-features that build upon one another. Do not include details already implemented in the codebase.
->    - For each proposed sub-feature, justify your choice: Is it genuinely easy to communicate, and is a wrong assumption quick to fix? If yes, keep it combined; if no, break it out.
+>    - For each proposed sub-feature, justify your choice: Is it genuinely easy to communicate with a human user, and is a wrong assumption quick to fix? If yes, keep it as a combined feature; if no, break it down into sub-features.
 > - **Atomicity & Feedback Loops:** When deciding whether to break a feature down further or simply make an assumption, justify your choice using three rules:
->    - *Cost/Token Efficiency:* Would a breakdown save time and token spend?
->    - *Correction Ease:* Is the assumption easy to communicate and quick to fix if wrong?
+>    - *Cost/Token Efficiency:* Would a breakdown save time and token spend overall?
+>    - *Correction Ease:* Is the assumption easy to communicate with a human user and quick to fix if wrong?
 >    - *Fewer iterations:* Does it require more iterations or fewer iterations? More iterations will cost more human time and often cost more tokens.
 > - **Acceptance Criteria:** Define the feature requests using a strict **Given-When-Then** format. Use entirely user-verifiable language—do not refer to underlying codebase structures or architectural terminology.
 
@@ -143,7 +145,7 @@ Have the AI map out *how* the change request integrates into the codebase by upd
 
 > Based on the `change_request_prompt.md` and the codebase context, generate or update design documents in `design_docs/` for human read. and generate a strict step-by-step `coding_prompt.md` for AI execution. Do not include in `coding_prompt.md` any details already implemented in the codebase. Wait for my approval.
 >
-> The Ground Truth Principle: Treat your codebase as the absolute source of truth. Design docs are historic intent. If they clash, the code wins.
+> The Ground Truth Principle: Treat your codebase as the absolute source of truth. Design docs are historical intent. If they clash, the code wins.
 >
 > When updating the design documents, edit only what this change affects. Capture architecture changes, API changes, and external constraints — not low-level implementation details, which live in the code.
 >
@@ -156,15 +158,15 @@ Feed the AI the generated `coding_prompt.md` and force it to code incrementally.
 
 ### 2.4.1. Prompt: Code by AI
 
-> Execute step `...` of the prompt. Write complete, production-ready code with no placeholders. Stop and wait for me to verify the tests pass before moving to the next step.
->
-> Coding Constraints:
-> - Generate the whole file: Always output the complete file content in zip file so I can download, unzip and replace my local copy directly.
+> Execute step by step. Stop and wait for me to verify the tests pass before moving to the next step.
+> 
+> Write complete, production-ready code with no placeholders. Coding Constraints:
+> - Generate the whole file: Always output the complete file content in a zip file if you can, so I can download, unzip and replace my local copy directly.
 > - Minimal changes only: Do the absolute minimum required to accomplish the task. Do not expand the scope.
-> - If you feel a change_request_prompt.md change or a broader architectural change is necessary, ask for my approval first.
 > - Zero cosmetic changes: I manually review every line using diff tools. Do not reformat existing code, change indentation, merge/split lines, or modify/add/remove comments. Leave the surrounding code exactly as you found it to keep the diff clean.
->
-> Please provide commit text along with your results.
+> - Please provide commit text along with your results.
+> 
+> If you feel the change require unplanned broader architectural change, ask for my approval first.
 
 ### 2.4.2. Prompt: Test with Human Verification
 

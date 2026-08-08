@@ -124,8 +124,6 @@ def write_concatenated_artifact(output_file, file_items, summary_text):
                     print(error_message, end='')
                     outfile.write(error_message)
                 
-                outfile.write("\n\n")
-            
             outfile.write(summary_text)
         print(f"✅ Success! Content concatenated into '{output_file}'.")
     except IOError as e:
