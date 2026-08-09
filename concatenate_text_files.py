@@ -1,6 +1,8 @@
+
 import os
 import sys
 import argparse
+import fnmatch
 from pathlib import Path
 from typing import Optional
 
@@ -28,14 +30,29 @@ def is_excluded(path: Path, name_exclusions: set[str], path_exclusions: set[Path
         return True
     if path.resolve() in path_exclusions:
         return True
-    path_str = f"/{path.resolve().as_posix()}/"
+
+    resolved = path.resolve()
+    path_str = f"/{resolved.as_posix()}/"
+
     for exc in raw_exclusions:
         exc_clean = exc.replace('\\', '/')
         while exc_clean.startswith('./'):
             exc_clean = exc_clean[2:]
         exc_clean = exc_clean.strip('/')
-        if exc_clean and f"/{exc_clean}/" in path_str:
-            return True
+        if not exc_clean:
+            continue
+
+        if any(ch in exc_clean for ch in '*?['):
+            # Glob pattern: match filename directly ("*.md") or as a
+            # path suffix ("docs/*.md", "**/test_*.py").
+            if fnmatch.fnmatch(path.name, exc_clean):
+                return True
+            if fnmatch.fnmatch(resolved.as_posix(), f"*{exc_clean}"):
+                return True
+        else:
+            if f"/{exc_clean}/" in path_str:
+                return True
+
     return False
 
 def get_display_path(file_path: Path, base_dir: Optional[Path]) -> Path:
@@ -127,7 +144,13 @@ def main():
     # Execution Modifiers
     parser.add_argument("-r", "--recursive", action="store_true", help="Include subfolders recursively for directory inputs.")
     parser.add_argument("--max", type=int, help="Maximum file size in bytes. Files larger than this will be excluded.")
-    parser.add_argument("--no", action="append", default=[], help="Exclude specific files or directories by name or path. Can be used multiple times.")
+    parser.add_argument(
+        "--no", action="append", default=[],
+        help="Exclude files/dirs by exact name, path, or glob pattern "
+             "(e.g. '*.md', 'test_*.py', 'docs/*.md'). Repeat the flag "
+             "or comma-separate multiple patterns in one flag, "
+             "e.g. --no '*.md,*.log,node_modules'."
+    )
 
     # Content filters (Only apply to folders)
     filter_group = parser.add_mutually_exclusive_group()
@@ -137,10 +160,18 @@ def main():
     parser.add_argument("-o", "--output", help="Specify the output file name.")
     
     args = parser.parse_args()
-    
-    name_exclusions = set(args.no)
-    path_exclusions = {Path(p).resolve() for p in args.no}
-    raw_exclusions = args.no
+
+    # Support both repeated flags (--no a --no b) and comma-separated
+    # values within one flag (--no "a,b,c"). Patterns are matched
+    # literally (no path components), so commas can't legitimately
+    # appear inside a single exclusion value.
+    expanded_no = []
+    for entry in args.no:
+        expanded_no.extend(p.strip() for p in entry.split(',') if p.strip())
+
+    name_exclusions = set(expanded_no)
+    path_exclusions = {Path(p).resolve() for p in expanded_no}
+    raw_exclusions = expanded_no
     
     found_files = []
 
