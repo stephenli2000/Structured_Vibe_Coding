@@ -19,12 +19,14 @@ Author's experience:
 - [2. The Structured Blueprint Method](#2-the-structured-blueprint-method)
   - [2.1. Prerequisites](#21-prerequisites)
   - [2.2. Align Requirements Between AI and Human](#22-align-requirements-between-ai-and-human)
-    - [2.2.1. Prompt: Reflect the scope with change\_request\_prompt.md](#221-prompt-reflect-the-scope-with-change_request_promptmd)
+    - [2.2.1. Prompt: Reflect the Human-Defined Change Goal and Scope](#221-prompt-reflect-the-human-defined-change-goal-and-scope)
   - [2.3. Co-Design with AI](#23-co-design-with-ai)
-    - [2.3.1. Prompt: Generate coding\_prompt.md for AI, update DESIGN.md for human](#231-prompt-generate-coding_promptmd-for-ai-update-designmd-for-human)
+    - [2.3.1. Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation](#231-prompt-generate-an-ai-facing-coding-plan-and-update-human-readable-design-documentation)
   - [2.4. Code and Test with Human Verification](#24-code-and-test-with-human-verification)
-    - [2.4.1. Prompt: Code by AI](#241-prompt-code-by-ai)
+    - [2.4.1. Prompt: Implement with AI for Human Audit](#241-prompt-implement-with-ai-for-human-audit)
     - [2.4.2. Prompt: Test with Human Verification](#242-prompt-test-with-human-verification)
+  - [2.5. Prepare for Regression Testing](#25-prepare-for-regression-testing)
+    - [2.5.1. Prompt: Capture Regression Context for AI Audit and Human Verification](#251-prompt-capture-regression-context-for-ai-audit-and-human-verification)
 - [3. Vibe Coding Tools](#3-vibe-coding-tools)
   - [3.1. Quick Start](#31-quick-start)
   - [3.2. `concatenate_text_files.py`](#32-concatenate_text_filespy)
@@ -85,7 +87,7 @@ A methodology that gets explicit confirmation at each step: requirements → des
 
 ## 2.1. Prerequisites
 
-Move your design, requirement, and test documents into Markdown format, for example, DESIGN.md in the repository.
+Keep design, requirement, and test documentation in Markdown, following the repository's existing locations and naming conventions.
 
 VS Code, with a few extensions, gives you a Word/Google Docs-like editing experience for Markdown:
 
@@ -103,31 +105,36 @@ VS Code, with a few extensions, gives you a Word/Google Docs-like editing experi
 
 Feed the AI your change request and ask it to audit for edge cases before any code is written.
 
-### 2.2.1. Prompt: Reflect the scope with change_request_prompt.md
+### 2.2.1. Prompt: Reflect the Human-Defined Change Goal and Scope
 
-1. Place change_request_prompt.md in the my_app/design_docs/ folder along with design documents, e.g., DESIGN.md.
+1. Place the feature request alongside the project's existing requirement or design documentation. Follow the repository's conventions; if none exist, use a clearly named Markdown document kept with the other feature materials.
 
-2. Package the related source code and document files with Vibe Coding Tools For example,
+2. Package the related source code and document files with the Vibe Coding Tools. For example:
 
 ```bash
 python3 ./Structured_Vibe_Coding/concatenate_text_files.py my_app/ --recursive
 ```
-This will generate a file my_app_concat.txt
+This generates `my_app_concat.txt`.
 
-3. Drop the my_app_concat.txt in AI chat window along with the following prompt,
+3. Attach `my_app_concat.txt` to the AI chat along with the following prompt:
 
-> Please review `change_request_prompt.md`. 
+> Please review the feature request document.
 > 
 > Audit the feature requests. Stop and ask for clarification if you find any logical gaps, unhandled edge cases, contradictions, or missing data dependencies.
 > ### Rules of Engagement
-> **The Ground Truth Principle:** Treat the codebase as the absolute source of truth. Markdown design files represent historical intent; if they clash with the codebase, the code wins.
+> **The Ground Truth Principle:** Treat the current codebase as the source of truth for existing behavior and implementation. Treat the approved feature request as the source of truth for intended user-visible behavior. Design documentation represents historical intent. If these sources conflict, identify the conflict and ask for clarification instead of silently choosing one.
 > 
 > **No Code Yet:** Wait for my approval on your audit and answers to any clarifying questions before writing any code or architectural designs. When asking for clarification, please use entirely user-verifiable language—try to avoid referring to underlying codebase structures or architectural terminology.
 > 
 > ### Update Instructions (Apply only if there are no pending clarifications)
 > If there are no pending clarifications, update the provided feature requests, incorporating the following instructions:
 > 
-> - **Incremental Scoping:** Break the feature down into smaller, user-verifiable sub-features that build upon one another. Do not include details already implemented in the codebase.
+> - **Human-Readable Feature Request:** Organize the updated feature request into two levels:
+>    - Begin with a very short **UX Goal** that a human can understand in 30–60 seconds. State who needs the feature, what they can accomplish, and the intended user-visible outcome. Do not include corner cases in this short section.
+>    - Follow it with **Detailed Feature Requirements** covering all user-visible behavior and UX corner cases established in this thread.
+>    - Use entirely user-verifiable language. Avoid code, component names, storage details, architecture, and other implementation terminology.
+>    - Give each detailed requirement a stable identifier so design, implementation, tests, and future audits can refer to it.
+> - **Incremental Scoping:** Break the feature down into smaller, user-verifiable sub-features that build upon one another. Do not create new requirements for unchanged behavior. Retain references to existing behavior when needed to define user expectations, dependencies, constraints, or regression coverage.
 >    - For each proposed sub-feature, justify your choice: Is it genuinely easy to communicate with a human user, and is a wrong assumption quick to fix? If yes, keep it as a combined feature; if no, break it down into sub-features.
 > - **Atomicity & Feedback Loops:** When deciding whether to break a feature down further or simply make an assumption, justify your choice using three rules:
 >    - *Cost/Token Efficiency:* Would a breakdown save time and token spend overall?
@@ -135,28 +142,29 @@ This will generate a file my_app_concat.txt
 >    - *Fewer iterations:* Does it require more iterations or fewer iterations? More iterations will cost more human time and often cost more tokens.
 > - **Acceptance Criteria:** Define the feature requests using a strict **Given-When-Then** format. Use entirely user-verifiable language—do not refer to underlying codebase structures or architectural terminology.
 
-Note that the initial version of change_request_prompt.md can be drafted in any format by the user.
+The initial feature request can be drafted in any format by the user.
 
 ## 2.3. Co-Design with AI
 
-Have the AI map out *how* the change request integrates into the codebase by updating your design docs (`DESIGN.md` or any Mermaid diagrams). You may skip this step for small features.
+Have the AI map out *how* the change request integrates into the codebase by updating the project's existing design documentation and diagrams. You may skip this step for small features.
 
-### 2.3.1. Prompt: Generate coding_prompt.md for AI, update DESIGN.md for human
+### 2.3.1. Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation
 
-> Based on the `change_request_prompt.md` and the codebase context, generate or update design documents in `design_docs/` for human read. and generate a strict step-by-step `coding_prompt.md` for AI execution. Do not include in `coding_prompt.md` any details already implemented in the codebase. Wait for my approval.
+> Based on the approved feature request and the codebase context, generate or update the project's human-readable design documentation and generate a strict step-by-step coding plan for AI execution. Follow the repository's existing locations and naming conventions; if none exist, choose clear Markdown documents kept with the feature materials. Do not create implementation steps for unchanged behavior. Retain existing implementation details when they are necessary to explain dependencies, invariants, compatibility constraints, or regression risks. Wait for my approval.
 >
-> The Ground Truth Principle: Treat your codebase as the absolute source of truth. Design docs are historical intent. If they clash, the code wins.
+> The Ground Truth Principle: Treat the current codebase as the source of truth for existing behavior and implementation. Treat the approved feature request as the source of truth for intended user-visible behavior. Design documentation represents historical intent. If these sources conflict, identify the conflict and ask for clarification instead of silently choosing one.
 >
 > When updating the design documents, edit only what this change affects. Capture architecture changes, API changes, and external constraints — not low-level implementation details, which live in the code.
 >
-> The architecture diagrams as .drawio.svg files for you to update. Preserve the embedded draw.io XML so the diagrams stay editable by human when needed.
-> If there are user-facing impacts, which affects change_request_prompt.md, ask for my confirmation.
+> When architecture diagrams are provided in an editable format, update them without removing the source metadata needed for future human editing.
+>
+> If the design introduces user-facing impacts that affect the approved feature request, ask for my confirmation.
 
 ## 2.4. Code and Test with Human Verification
 
-Feed the AI the generated `coding_prompt.md` and force it to code incrementally.
+Feed the AI the generated coding plan and require it to work incrementally.
 
-### 2.4.1. Prompt: Code by AI
+### 2.4.1. Prompt: Implement with AI for Human Audit
 
 > Execute step by step. Stop and wait for me to verify the tests pass before moving to the next step.
 > 
@@ -166,20 +174,64 @@ Feed the AI the generated `coding_prompt.md` and force it to code incrementally.
 > - Zero cosmetic changes: I manually review every line using diff tools. Do not reformat existing code, change indentation, merge/split lines, or modify/add/remove comments. Leave the surrounding code exactly as you found it to keep the diff clean.
 > - Please provide commit text along with your results.
 > 
-> If you feel the change require unplanned broader architectural change, ask for my approval first.
+> During implementation, continuously clean up everything introduced for the feature. Before considering the feature complete, remove temporary debugging code and logs, dead code, unused flags or dependencies, obsolete test data, commented-out experiments, superseded requirements, and duplicate documentation. Preserve intentional production diagnostics, compatibility code, and migration logic. Run the relevant tests again after cleanup.
+>
+> If you believe the change requires an unplanned broader architectural change, ask for my approval first.
 
 ### 2.4.2. Prompt: Test with Human Verification
 
-> Here is the test results.
+> Here are the test results.
 >
 > - Crashing? Yes/No
-> - Inputted:
+> - Input:
 > - The output is incorrect? Yes/No
-> - Outputted:
+> - Actual output:
 > - Logs attached:
 > - Expected output:
 > 
 > Please review the logic. Add logging if you need me to trace the execution steps.
+>
+
+## 2.5. Prepare for Regression Testing
+
+After the change is verified, preserve the engineering details and test coverage needed for future AI-assisted code audits and regression testing. Keep this technical context separate from the human-readable feature request and human verification checklist.
+
+### 2.5.1. Prompt: Capture Regression Context for AI Audit and Human Verification
+
+> Create or update these two standalone documents for this feature:
+>
+> - **AI Audit and Regression Context**
+> - **Human Verification Checklist**
+>
+> Follow the repository's existing documentation locations and naming conventions. If equivalent feature-specific documents already exist, update them instead of creating duplicates. If no convention exists, choose clear names, keep both documents with the feature materials, and use stable cross-references so future audits can resolve them.
+>
+> Produce each document separately using its corresponding section below. Do not merge the two documents.
+>
+> Treat the current codebase and tests as the source of truth for existing behavior and implementation. Treat the approved feature request as the source of truth for intended user-visible behavior. Use final test results and corrections from this thread as supporting evidence. If these sources conflict, record the conflict or ask for clarification instead of silently choosing one. Do not revive rejected ideas or superseded assumptions. Do not invent behavior, tests, or passing results.
+>
+> #### AI Audit and Regression Context
+>
+> In the AI Audit and Regression Context, write for an AI auditing any future change that might affect this feature. Include the coding-level details needed to identify impact, such as affected entry points, data flow, state transitions, invariants, validation and error behavior, persistence, dependencies, compatibility constraints, and relevant edge conditions.
+>
+> Map the implementation and automated or reproducible non-UX tests to the stable identifiers in the approved feature request. Include exact test locations, commands, setup or test-data prerequisites, expected results, and known coverage gaps when available. Clearly distinguish verified facts from assumptions and untested risks.
+>
+> In the AI Audit and Regression Context, do not repeat user-visible requirements or human-only test instructions. Refer to the approved feature request for intended user-visible behavior and to the Human Verification Checklist for checks that AI cannot perform.
+>
+> #### Human Verification Checklist
+>
+> In the Human Verification Checklist, include only checks that require human perception or judgment, such as visual appearance, clarity, interaction feel, accessibility experience, or whether the workflow is understandable.
+>
+> Minimize human time. Use the fewest necessary scenarios and steps, combine checks into one short workflow when practical, and omit anything that automated tests or AI can verify reliably. For each check, provide only the required setup, action, immediately observable expected result, and a simple pass/fail confirmation. Put the most important and fastest check first. Do not include implementation details, logs, API checks, or lengthy background explanations.
+>
+> Review and update the following reusable prompt sections in this workflow document only when a lesson from this feature applies broadly to future features. Do not add feature-specific requirements or implementation details to these reusable prompts. Remove missing, outdated, contradictory, or duplicated instructions when necessary:
+>
+> - **Prompt: Reflect the Human-Defined Change Goal and Scope**
+> - **Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation**
+> - **Prompt: Implement with AI for Human Audit**
+> - **Prompt: Test with Human Verification**
+>
+> Keep each concern in its owning prompt instead of duplicating it here. Report any remaining coverage gap, untested risk, or required human confirmation explicitly.
+>
 
 ---
 
@@ -300,5 +352,4 @@ python3 analyze_folder.py path/to/dir  # analyze a specific directory
 
 **Why text instead of zip?** Text is immediately visible and searchable in chat, avoids unzip friction, and keeps you and the AI tightly in sync.
 
-**Does this include third-party dependencies?** No — these tools focus on your source and local imports. Mention external packages in your prompt or attach your `change_request_prompt.md`.
-
+**Does this include third-party dependencies?** No — these tools focus on your source and local imports. Mention external packages in your prompt or attach the relevant feature request.
