@@ -4,41 +4,45 @@
 ![Claude, Gemini, ChatGPT, Codex, Cursor](svc.png)
 
 Author's experience:
-> Want to leverage frontier models like Claude Fable 5 without skyrocketing your AI bill?
+> Want to leverage frontier models without sending your AI bill skyrocketing? Our **Structured Vibe Coding CLI tool and methodology** are completely open source: https://github.com/aotuai/Structured_Vibe_Coding
+> 
+> The code for BrainFrame and VisionCapsules Applications was generated using Claude, Gemini, and ChatGPT. Over the past two years, we’ve tackled everything from quick fixes to major architectural work while keeping monthly budget costs between **$20 and $200 per developer**.
 >
-> Using our open-source **Structured Vibe Coding CLI tool and methodology**, we generated 90% of the production code for BrainFrame and VisionCapsules Applications using Claude, Gemini, and ChatGPT.
+>We achieved this without relying on Codex, Cursor, or heavyweight autonomous agents. The complete workflow lives in this repository and ordinary chat sessions with Claude, ChatGPT, and Gemini. Whether you call it a skill, a harness, or simply good software engineering, it comes down to two things: (1) treating AI as another software engineer and (2) streamlining collaboration between AI and human engineers. 
 >
-> Over the past 1.5 years, we’ve tackled everything from quick fixes to massive architectural tasks—all on a lean monthly budget of **$20–$200** per developer.
+> Our tool and workflow are designed for veteran software and algorithm engineers with deep experience in Python, web development, C/C++, Linux, and Git who want tight control over their LLM usage and budgets, along with the freedom to switch models without being locked into a paid vendor or proprietary platform.
+> 
+> As of August 2026, models in our active rotation include:
+> - Anthropic: Claude Sonnet 5 (medium effort) and Claude Fable 5
+> - OpenAI: GPT-5.6 Sol (medium reasoning effort)
+> - Google: Gemini 3.6 Flash (thinking enabled)
 >
-> We achieved this without relying on Codex, Cursor, or heavy autonomous agents. Strip away the marketing, and the underlying theory is the same. Whether you call it a skill, a harness, or just good software engineering practice, it all comes down to treating AI as another software engineer. Our tool is designed for veteran software and algorithm engineers with deep experience in Python, web development, C/C++, Linux, and Git who want tight control over their LLMs and budgets.
->
-> Open sourced here: https://github.com/aotuai/Structured_Vibe_Coding
 
 - [1. Philosophy: Structured Vibe Coding](#1-philosophy-structured-vibe-coding)
   - [1.1. Who is this for?](#11-who-is-this-for)
-- [2. The Structured Blueprint Method](#2-the-structured-blueprint-method)
-  - [2.1. Prerequisites](#21-prerequisites)
-  - [2.2. Align Requirements Between AI and Human](#22-align-requirements-between-ai-and-human)
-    - [2.2.1. Prompt: Reflect the Human-Defined Change Goal and Scope](#221-prompt-reflect-the-human-defined-change-goal-and-scope)
-  - [2.3. Co-Design with AI](#23-co-design-with-ai)
-    - [2.3.1. Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation](#231-prompt-generate-an-ai-facing-coding-plan-and-update-human-readable-design-documentation)
-  - [2.4. Code and Test with Human Verification](#24-code-and-test-with-human-verification)
-    - [2.4.1. Prompt: Implement with AI for Human Audit](#241-prompt-implement-with-ai-for-human-audit)
-    - [2.4.2. Prompt: Test with Human Verification](#242-prompt-test-with-human-verification)
-  - [2.5. Prepare for Regression Testing](#25-prepare-for-regression-testing)
-    - [2.5.1. Prompt: Capture Regression Context for AI Audit and Human Verification](#251-prompt-capture-regression-context-for-ai-audit-and-human-verification)
-- [3. Vibe Coding Tools](#3-vibe-coding-tools)
-  - [3.1. Quick Start](#31-quick-start)
-  - [3.2. `concatenate_text_files.py`](#32-concatenate_text_filespy)
-  - [3.3. `concatenate_python_files.py`](#33-concatenate_python_filespy)
-  - [3.4. `save_commits.py`](#34-save_commitspy)
-  - [3.5. `analyze_folder.py`](#35-analyze_folderpy)
-- [4. Workflow Examples](#4-workflow-examples)
-  - [4.1. Whole-project review](#41-whole-project-review)
-  - [4.2. Python bug fix in a small tool](#42-python-bug-fix-in-a-small-tool)
-  - [4.3. Focused PR feedback](#43-focused-pr-feedback)
-  - [4.4. The Blueprint Method](#44-the-blueprint-method)
-- [5. FAQ](#5-faq)
+- [2. Prerequisites](#2-prerequisites)
+- [3. The Structured Blueprint Method](#3-the-structured-blueprint-method)
+  - [3.1. Align Requirements Between AI and Human](#31-align-requirements-between-ai-and-human)
+    - [3.1.1. Prompt: Reflect the Human-Defined Change Goal and Scope](#311-prompt-reflect-the-human-defined-change-goal-and-scope)
+  - [3.2. Co-Design with AI](#32-co-design-with-ai)
+    - [3.2.1. Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation](#321-prompt-generate-an-ai-facing-coding-plan-and-update-human-readable-design-documentation)
+  - [3.3. Code with AI](#33-code-with-ai)
+    - [3.3.1. Prompt: Implement with AI for Human Audit](#331-prompt-implement-with-ai-for-human-audit)
+  - [3.4. Test with Human Verification](#34-test-with-human-verification)
+    - [3.4.1. Prompt: Human Verification Feedback](#341-prompt-human-verification-feedback)
+  - [3.5. Conclude and Prepare for Regression Testing](#35-conclude-and-prepare-for-regression-testing)
+    - [3.5.1. Prompt: Capture Regression Context for AI Audit and Human Verification](#351-prompt-capture-regression-context-for-ai-audit-and-human-verification)
+- [4. Vibe Coding Tools](#4-vibe-coding-tools)
+  - [4.1. Quick Start](#41-quick-start)
+  - [4.2. `concatenate_text_files.py`](#42-concatenate_text_filespy)
+  - [4.3. `concatenate_python_files.py`](#43-concatenate_python_filespy)
+  - [4.4. `save_commits.py`](#44-save_commitspy)
+  - [4.5. `analyze_folder.py`](#45-analyze_folderpy)
+- [5. Workflow Examples](#5-workflow-examples)
+  - [5.1. Implement a feature](#51-implement-a-feature)
+  - [5.2. Fix a bug](#52-fix-a-bug)
+  - [5.3. Review a patch](#53-review-a-patch)
+- [6. FAQ](#6-faq)
 
 ---
 
@@ -81,15 +85,11 @@ For larger features, asking an AI to design architecture and write code at the s
 
 ---
 
-# 2. The Structured Blueprint Method
+# 2. Prerequisites
 
-A methodology that gets explicit confirmation at each step: requirements → design → coding. Humans and AI stay aligned without rework or context drift.
+To use AI throughout the software engineering lifecycle, keep your design, requirement, and test documentation in Markdown while following the repository's existing locations and naming conventions.
 
-## 2.1. Prerequisites
-
-Keep design, requirement, and test documentation in Markdown, following the repository's existing locations and naming conventions.
-
-VS Code, with a few extensions, gives you a Word/Google Docs-like editing experience for Markdown:
+VS Code, together with a few extensions, provides a Word/Google Docs-like editing experience for Markdown:
 
 - Export Google Docs to HTML ZIP, then convert the HTML into Markdown with Pandoc:
   ```
@@ -101,11 +101,15 @@ VS Code, with a few extensions, gives you a Word/Google Docs-like editing experi
 - Use GitHub Flavored Markdown (GFM) for tables.
 - Use the **Markdown All-in-One** extension for section numbering and the Table of Contents.
 
-## 2.2. Align Requirements Between AI and Human
+# 3. The Structured Blueprint Method
+
+A methodology that gets explicit confirmation at each step: requirements → design → coding. Humans and AI stay aligned without rework or context drift.
+
+## 3.1. Align Requirements Between AI and Human
 
 Feed the AI your change request and ask it to audit for edge cases before any code is written.
 
-### 2.2.1. Prompt: Reflect the Human-Defined Change Goal and Scope
+### 3.1.1. Prompt: Reflect the Human-Defined Change Goal and Scope
 
 1. Place the feature request alongside the project's existing requirement or design documentation. Follow the repository's conventions; if none exist, use a clearly named Markdown document kept with the other feature materials.
 
@@ -118,9 +122,9 @@ This generates `my_app_concat.txt`.
 
 3. Attach `my_app_concat.txt` to the AI chat along with the following prompt:
 
-> Please review the feature request document.
+> The feature requests are: (Attached)
 > 
-> Audit the feature requests. Stop and ask for clarification if you find any logical gaps, unhandled edge cases, contradictions, or missing data dependencies.
+> Please audit the feature requests. Stop and ask for clarification if you find any logical gaps, unhandled edge cases, contradictions, or missing data dependencies.
 > ### Rules of Engagement
 > **The Ground Truth Principle:** Treat the current codebase as the source of truth for existing behavior and implementation. Treat the approved feature request as the source of truth for intended user-visible behavior. Design documentation represents historical intent. If these sources conflict, identify the conflict and ask for clarification instead of silently choosing one.
 > 
@@ -144,11 +148,11 @@ This generates `my_app_concat.txt`.
 
 The initial feature request can be drafted in any format by the user.
 
-## 2.3. Co-Design with AI
+## 3.2. Co-Design with AI
 
 Have the AI map out *how* the change request integrates into the codebase by updating the project's existing design documentation and diagrams. You may skip this step for small features.
 
-### 2.3.1. Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation
+### 3.2.1. Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation
 
 > Based on the approved feature request and the codebase context, generate or update the project's human-readable design documentation and generate a strict step-by-step coding plan for AI execution. Follow the repository's existing locations and naming conventions; if none exist, choose clear Markdown documents kept with the feature materials. Do not create implementation steps for unchanged behavior. Retain existing implementation details when they are necessary to explain dependencies, invariants, compatibility constraints, or regression risks. Wait for my approval.
 >
@@ -160,13 +164,12 @@ Have the AI map out *how* the change request integrates into the codebase by upd
 >
 > If the design introduces user-facing impacts that affect the approved feature request, ask for my confirmation.
 
-## 2.4. Code and Test with Human Verification
+## 3.3. Code with AI
 
 Feed the AI the generated coding plan and require it to work incrementally.
 
-### 2.4.1. Prompt: Implement with AI for Human Audit
+### 3.3.1. Prompt: Implement with AI for Human Audit
 
-> Execute step by step. Stop and wait for me to verify the tests pass before moving to the next step.
 > 
 > Write complete, production-ready code with no placeholders. Coding Constraints:
 > - Generate the whole file: Always output the complete file content in a zip file if you can, so I can download, unzip and replace my local copy directly.
@@ -178,10 +181,15 @@ Feed the AI the generated coding plan and require it to work incrementally.
 >
 > If you believe the change requires an unplanned broader architectural change, ask for my approval first.
 
-### 2.4.2. Prompt: Test with Human Verification
+## 3.4. Test with Human Verification
 
-> Here are the test results.
+This is a template for human to fill in the human verification results.
+
+### 3.4.1. Prompt: Human Verification Feedback
+
+> Here are the test results:
 >
+> - Test case:
 > - Crashing? Yes/No
 > - Input:
 > - The output is incorrect? Yes/No
@@ -192,54 +200,50 @@ Feed the AI the generated coding plan and require it to work incrementally.
 > Please review the logic. Add logging if you need me to trace the execution steps.
 >
 
-## 2.5. Prepare for Regression Testing
+## 3.5. Conclude and Prepare for Regression Testing
 
 After the change is verified, preserve the engineering details and test coverage needed for future AI-assisted code audits and regression testing. Keep this technical context separate from the human-readable feature request and human verification checklist.
 
-### 2.5.1. Prompt: Capture Regression Context for AI Audit and Human Verification
+### 3.5.1. Prompt: Capture Regression Context for AI Audit and Human Verification
 
-> Create or update these two standalone documents for this feature:
->
-> - **AI Audit and Regression Context**
-> - **Human Verification Checklist**
->
-> Follow the repository's existing documentation locations and naming conventions. If equivalent feature-specific documents already exist, update them instead of creating duplicates. If no convention exists, choose clear names, keep both documents with the feature materials, and use stable cross-references so future audits can resolve them.
->
-> Produce each document separately using its corresponding section below. Do not merge the two documents.
->
-> Treat the current codebase and tests as the source of truth for existing behavior and implementation. Treat the approved feature request as the source of truth for intended user-visible behavior. Use final test results and corrections from this thread as supporting evidence. If these sources conflict, record the conflict or ask for clarification instead of silently choosing one. Do not revive rejected ideas or superseded assumptions. Do not invent behavior, tests, or passing results.
->
-> #### AI Audit and Regression Context
->
-> In the AI Audit and Regression Context, write for an AI auditing any future change that might affect this feature. Include the coding-level details needed to identify impact, such as affected entry points, data flow, state transitions, invariants, validation and error behavior, persistence, dependencies, compatibility constraints, and relevant edge conditions.
->
-> Map the implementation and automated or reproducible non-UX tests to the stable identifiers in the approved feature request. Include exact test locations, commands, setup or test-data prerequisites, expected results, and known coverage gaps when available. Clearly distinguish verified facts from assumptions and untested risks.
->
-> In the AI Audit and Regression Context, do not repeat user-visible requirements or human-only test instructions. Refer to the approved feature request for intended user-visible behavior and to the Human Verification Checklist for checks that AI cannot perform.
->
-> #### Human Verification Checklist
->
-> In the Human Verification Checklist, include only checks that require human perception or judgment, such as visual appearance, clarity, interaction feel, accessibility experience, or whether the workflow is understandable.
->
-> Minimize human time. Use the fewest necessary scenarios and steps, combine checks into one short workflow when practical, and omit anything that automated tests or AI can verify reliably. For each check, provide only the required setup, action, immediately observable expected result, and a simple pass/fail confirmation. Put the most important and fastest check first. Do not include implementation details, logs, API checks, or lengthy background explanations.
->
-> Review and update the following reusable prompt sections in this workflow document only when a lesson from this feature applies broadly to future features. Do not add feature-specific requirements or implementation details to these reusable prompts. Remove missing, outdated, contradictory, or duplicated instructions when necessary:
+> #### Review and update prompt
+> Review and update the following reusable prompt sections in this workflow document for accuracy:
 >
 > - **Prompt: Reflect the Human-Defined Change Goal and Scope**
 > - **Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation**
 > - **Prompt: Implement with AI for Human Audit**
 > - **Prompt: Test with Human Verification**
 >
-> Keep each concern in its owning prompt instead of duplicating it here. Report any remaining coverage gap, untested risk, or required human confirmation explicitly.
+>
+> Create two standalone documents for future regression context of this feature:
+>
+> - **Prompt: AI Audit and Regression Context**
+> - **Prompt: Human Verification Checklist**
+>
+> Treat the current codebase and tests as the source of truth for existing behavior and implementation. Treat the approved feature request as the source of truth for intended user-visible behavior. Use final test results and human verification as supporting evidence. If these sources conflict, record the conflict or ask for clarification instead of silently choosing one. Do not revive rejected ideas or superseded assumptions. Do not invent behavior, tests, or passing results.
+>
+> #### Prompt: AI Audit and Regression Context
+>
+> In the AI Audit and Regression Context, write for an AI auditing any future change that might affect this feature. Include the coding-level details needed to identify impact, such as affected entry points, data flow, state transitions, invariants, validation and error behavior, persistence, dependencies, compatibility constraints, and relevant edge conditions.
+>
+> Map the implementation and automated or reproducible non-UX tests to the stable identifiers in the approved feature request. Include exact test locations, commands, setup or test-data prerequisites, expected results, and known coverage gaps when available. Clearly distinguish verified facts from assumptions and untested risks.
+>
+> In the document, refer to the approved feature request for intended user-visible behavior and to the Human Verification Checklist for checks that AI cannot perform. Do not repeat user-visible requirements or human-only test instructions in this document.
+>
+> #### Prompt: Human Verification Checklist
+>
+> In the Human Verification Checklist, include only checks that require human perception or judgment, such as visual appearance, clarity, interaction feel, accessibility experience, or whether the workflow is understandable.
+>
+> Minimize human time. Use the fewest necessary scenarios and steps, combine checks into one short workflow when practical, and omit anything that automated tests or AI can verify reliably. For each check, provide only the required setup, action, immediately observable expected result, and a simple pass/fail confirmation. Put the most important and fastest check first. Do not include implementation details, logs, API checks, or lengthy background explanations.
 >
 
 ---
 
-# 3. Vibe Coding Tools
+# 4. Vibe Coding Tools
 
 Keep it simple. These small scripts package the **right** text or code so you can drop a file, folder, or file type into a chat-based AI. **No lock-in** to any model or tool.
 
-## 3.1. Quick Start
+## 4.1. Quick Start
 
 ```bash
 python3 -m venv venv && source venv/bin/activate
@@ -252,7 +256,7 @@ python3 -m venv venv && source venv/bin/activate
 
 ---
 
-## 3.2. `concatenate_text_files.py`
+## 4.2. `concatenate_text_files.py`
 
 *Snapshot all text files in a repo.*
 
@@ -270,7 +274,7 @@ The script supports `--code-only` and `--py-only` options to reduce the number o
 
 ---
 
-## 3.3. `concatenate_python_files.py`
+## 4.3. `concatenate_python_files.py`
 
 *Bundle a script plus its local imports.*
 
@@ -286,7 +290,7 @@ python3 concatenate_python_files.py project_root/ path/to/main.py [another.py ..
 
 ---
 
-## 3.4. `save_commits.py`
+## 4.4. `save_commits.py`
 
 *Package the files changed in a commit or range.*
 
@@ -306,7 +310,7 @@ python3 save_commits.py --base a1b2c3d --this f9e8d7c
 
 ---
 
-## 3.5. `analyze_folder.py`
+## 4.5. `analyze_folder.py`
 
 *Quick repo inventory.*
 
@@ -322,33 +326,32 @@ python3 analyze_folder.py path/to/dir  # analyze a specific directory
 
 ---
 
-# 4. Workflow Examples
+# 5. Workflow Examples
 
-## 4.1. Whole-project review
+## 5.1. Implement a feature
 
-1. `python3 concatenate_text_files.py ./myapp` → `myapp.txt`
+1. `python3 concatenate_text_files.py ./myapp --recursive` → `myapp.txt`
 2. Attach `myapp.txt` in chat.
-3. Ask: *"Review for structure, add tests for X, and propose a minimal refactor."*
+3. Paste: *Prompt: Reflect the Human-Defined Change Goal and Scope*
+4. Skip this step if not applicable - Paste: *Prompt: Generate an AI-Facing Coding Plan and Update Human-Readable Design Documentation*
+5. Paste: *Prompt: Implement with AI for Human Audit*
+6. Paste: *Prompt: Human Verification Feedback*
+7. Skip this step if not applicable - Paste: *Prompt: Capture Regression Context for AI Audit and Human Verification*
+## 5.2. Fix a bug
 
-## 4.2. Python bug fix in a small tool
+1. `python3 concatenate_python_files.py ./mayapp ./myapp/myapp.py` → `myapp.txt`
+2. Attach `myapp.txt` in chat.
+3. Ask: *"There's a crash when input is empty. Fix it."*, Paste: *Prompt: Implement with AI for Human Audit*
 
-1. `python3 concatenate_python_files.py ./tools ./tools/runner.py` → `tools_concatenated.txt`
-2. Attach; ask: *"There's a crash when input is empty. Fix it and add doctests."*
-
-## 4.3. Focused PR feedback
+## 5.3. Review a patch
 
 1. `python3 save_commits.py --base abc123 --this def456` → `abc123-def456.txt`
-2. Attach; ask: *"Explain risk, edge cases, and missing tests in this change."*
-
-## 4.4. The Blueprint Method
-
-1. `python3 concatenate_text_files.py ./myapp --code-only` → `myapp_code.txt`
-2. Attach `myapp_code.txt` along with your `requirement_prompt.md`.
-3. Follow the prompts in Section **The Blueprint Method** to design and execute without context drift.
+2. Attach `abc123-def456.txt` in chat.
+3. Ask: *"Explain risk, edge cases, and missing tests in this change."*
 
 ---
 
-# 5. FAQ
+# 6. FAQ
 
 **Why text instead of zip?** Text is immediately visible and searchable in chat, avoids unzip friction, and keeps you and the AI tightly in sync.
 
