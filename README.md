@@ -48,19 +48,25 @@ Author's experience:
 
 # 1. Philosophy: Structured Vibe Coding
 
-Fundamentally, Agentic IDEs (like Cursor or Copilot) introduce a middleman into your workflow. They wrap the underlying foundation models in a black box, relying on hidden system prompts and automated, unpredictable context-gathering.
+AI coding is no different than human coding. Whether you use AI chat directly, Agentic IDEs (like Cursor), or command-line tools like Codex or Claude Code, working on a project fundamentally relies on a few core elements:
 
-Structured Vibe Coding explicitly rejects the black box. It operates on two core pillars:
+1. Problem-solving capability: Are you smart enough to learn and solve problems?
+2. Tool proficiency: Are you skilled enough to use computers, Linux, git, awk, sed, g++, Python, and other utilities?
+3. Software engineering experience: Do you understand how to define requirements, design, code, test, and handle regressions while recognizing that requirements change over time?
 
-* **Vobe Coding Tooling**: Scripts that allow humans to share exact context with the AI, and for the AI to return complete files back to the human. So the interaction with AI is transparent to the user.
+When multiple individuals work on a project, effective collaboration becomes critically important for success, making a structured engineering process essential. When you collaborate with an AI on a codebase—treating the human and the AI as two individuals working together—pure "vibe coding" is not enough.  Structured Vibe Coding bridges this gap. It operates on two core pillars:
+
+* **Vibe Coding Tooling**: Scripts that allow humans to share exact context with the AI, and for the AI to return complete files back to the human. So the interaction with AI is transparent to the user. This provides a way for a user to evaluate which AI model has the best **Problem-solving capability** without noise from **Tool proficiency** explained above, and switch among all models easily:
   * **Concatenate scripts:** Package source code, git history, requirements and design documents for dropping into a chat interface
   * **Code retrieval tools:** Retrieve output and dropping back to the repository (To be developed, **PRs welcome**)
-* **Structured Blueprint Workflows**: A clear, phase-based framework that forces the AI to collaborate exactly how a junior and senior software engineer would interact:
+* **Structured Blueprint Workflows**: A clear, phase-based framework that forces the AI to collaborate exactly how a junior and senior software engineer would interact, with **Software engineering experience** explained above
   * **Requirements Clarification** 
   * **Design Constraint Confirmation** 
   * **Code & Test Verification**
 
-| Feature | Structured Vibe Coding  | Agentic IDEs (Cursor/Copilot) |
+Most developers would likely agree that tools like Codex and Claude Code already excel at **Tool proficiency**, so there is little need to reinvent the wheel there. Instead, the real value of this philosophy lies in using the remaining two elements—evaluating their **problem-solving capabilities** and enforcing software engineering discipline through structured workflows.
+
+| Feature | Structured Vibe Coding  | Agentic IDEs (Cursor) |
 | :--- | :--- | :--- |
 | **Target User** | **Production Engineering.** CLI-comfortable devs and budget-conscious teams. | **Speed-Focused Devs.** Individuals rapidly prototyping. Output often requires a separate engineering pass for production. |
 | **Context Control** | **Absolute.** You build the exact text file using the CLI tools. | **Low.** The IDE guesses what matters via RAG. |
@@ -120,15 +126,15 @@ python3 ./Structured_Vibe_Coding/concatenate_text_files.py my_app/ --recursive
 ```
 This generates `my_app_concat.txt`.
 
-3. Attach `my_app_concat.txt` to the AI chat along with the following prompt:
+3. The initial feature request can be drafted in any format by the user. Attach `my_app_concat.txt` to the AI chat along with the initial feature request and the following prompt:
 
-> The feature requests are: (Attached)
+> The feature request(s): (Attached)
 > 
 > Please audit the feature requests. Stop and ask for clarification if you find any logical gaps, unhandled edge cases, contradictions, or missing data dependencies.
 > ### Rules of Engagement
 > **The Ground Truth Principle:** Treat the current codebase as the source of truth for existing behavior and implementation. Treat the approved feature request as the source of truth for intended user-visible behavior. Design documentation represents historical intent. If these sources conflict, identify the conflict and ask for clarification instead of silently choosing one.
 > 
-> **No Code Yet:** Wait for my approval on your audit and answers to any clarifying questions before writing any code or architectural designs. When asking for clarification, please use entirely user-verifiable language—try to avoid referring to underlying codebase structures or architectural terminology.
+> **No Code Yet:** Wait for my approval on your audit and answers to any clarifying questions before writing any code or architectural designs. When asking for clarification, please use entirely user-verifiable language—try to avoid referring to underlying codebase structures or architectural terminology. If the answer to any of the questions significantly changes the complexity of the implementation, please call it out.
 > 
 > ### Update Instructions (Apply only if there are no pending clarifications)
 > If there are no pending clarifications, update the provided feature requests, incorporating the following instructions:
@@ -146,8 +152,6 @@ This generates `my_app_concat.txt`.
 >    - *Fewer iterations:* Does it require more iterations or fewer iterations? More iterations will cost more human time and often cost more tokens.
 > - **Acceptance Criteria:** Define the feature requests using a strict **Given-When-Then** format. Use entirely user-verifiable language—do not refer to underlying codebase structures or architectural terminology.
 
-The initial feature request can be drafted in any format by the user.
-
 ## 3.2. Co-Design with AI
 
 Have the AI map out *how* the change request integrates into the codebase by updating the project's existing design documentation and diagrams. You may skip this step for small features.
@@ -163,6 +167,8 @@ Have the AI map out *how* the change request integrates into the codebase by upd
 > When architecture diagrams are provided in an editable format, update them without removing the source metadata needed for future human editing.
 >
 > If the design introduces user-facing impacts that affect the approved feature request, ask for my confirmation.
+>
+> Please evaluate the complexity of the implementation, recommend the proper model and type of effort based on your evaluation, and rate the complexity by giving an estimated range for the number of iterations of the chat between the user and AI.
 
 ## 3.3. Code with AI
 
@@ -180,6 +186,8 @@ Feed the AI the generated coding plan and require it to work incrementally.
 > During implementation, continuously clean up everything introduced for the feature. Before considering the feature complete, remove temporary debugging code and logs, dead code, unused flags or dependencies, obsolete test data, commented-out experiments, superseded requirements, and duplicate documentation. Preserve intentional production diagnostics, compatibility code, and migration logic. Run the relevant tests again after cleanup.
 >
 > If you believe the change requires an unplanned broader architectural change, ask for my approval first.
+> 
+> Please evaluate the complexity of the implementation again, recommend the proper model and type of effort based on your evaluation, and rate the complexity by giving an estimated range for the number of iterations of the chat between the user and AI.
 
 ## 3.4. Test with Human Verification
 
@@ -199,6 +207,7 @@ This is a template for human to fill in the human verification results.
 > 
 > Please review the logic. Add logging if you need me to trace the execution steps.
 >
+> Please evaluate the complexity of the implementation, recommend the proper model and type of effort based on your evaluation, and rate the complexity by giving an estimated range for the number of iterations of the chat between the user and AI.
 
 ## 3.5. Conclude and Prepare for Regression Testing
 
